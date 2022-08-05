@@ -16,8 +16,8 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/films")
 public class FilmController {
-    final LocalDate BIRTH_MOVIE = LocalDate.of(1895, 12, 28);
-    HashMap<Integer, Film> films = new HashMap<>();
+    private final static LocalDate BIRTH_MOVIE = LocalDate.of(1895, 12, 28);
+    private HashMap<Integer, Film> films = new HashMap<>();
     private Integer id=0;
 
     @GetMapping
@@ -28,8 +28,11 @@ public class FilmController {
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
+        if (film.getReleaseDate().isBefore(BIRTH_MOVIE)) {
+            log.error("Передан запрос POST с некорректным данными фильима {}.", film);
+            throw new ValidationException(HttpStatus.resolve(400));
+        }
         createFilmId(film);
-        isValid(film);
         films.put(film.getId(), film);
         log.debug("Получен запрос POST. Передан обьект {}", film);
         return film;
@@ -38,7 +41,10 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        isValid(film);
+        if (film.getReleaseDate().isBefore(BIRTH_MOVIE)) {
+            log.error("Передан запрос POST с некорректным данными фильима {}.", film);
+            throw new ValidationException(HttpStatus.resolve(400));
+        }
         if (films.containsKey(film.getId())) {
             if (!films.containsValue(film)) {
                 films.replace(film.getId(), film);
@@ -48,19 +54,14 @@ public class FilmController {
             }
             return film;
         } else {
-            log.error("Передан запрос PUT с некорректным данными фльима {}.", film);
-            throw new ValidationException(HttpStatus.resolve(500));
+            log.error("Передан запрос PUT с некорректным данными фильима {}.", film);
+            throw new NotFoundException(HttpStatus.resolve(404));
         }
 
     }
 
     private void isValid(Film film) {
-        if (film.getId() < 1 || film.getName().isBlank() || film.getDescription().length() > 200 ||
-                film.getDescription().isBlank() || film.getReleaseDate().isBefore(BIRTH_MOVIE) || film.getDuration() < 0) {
-            log.error("Передан запрос POST с некорректным данными фльима {}.", film);
-            throw new ValidationException(HttpStatus.resolve(500));
 
-        }
     }
     private void createFilmId(Film film){
         id++;

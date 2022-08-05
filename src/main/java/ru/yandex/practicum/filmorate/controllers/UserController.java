@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/users")
 public class UserController {
-    HashMap<Integer, User> users = new HashMap<>();
+    private HashMap<Integer, User> users = new HashMap<>();
     private Integer id = 0;
 
     @GetMapping
@@ -29,8 +29,10 @@ public class UserController {
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
+        if(user.getLogin().contains(" ")){
+            throw new ValidationException(HttpStatus.resolve(400));
+        }
         createUserId(user);
-        isValid(user);
         if (user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
@@ -41,7 +43,9 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
-        isValid(user);
+        if(user.getLogin().contains(" ")){
+            throw new ValidationException(HttpStatus.resolve(400));
+        }
         if (users.containsKey(user.getId())) {
             if (!users.containsValue(user)) {
                 users.replace(user.getId(), user);
@@ -52,17 +56,11 @@ public class UserController {
             return user;
         } else {
             log.error("Передан запрос PUT с некорректным данными пользователя{}", user);
-            throw new ValidationException(HttpStatus.resolve(500));
+            throw new NotFoundException(HttpStatus.resolve(404));
         }
 
     }
 
-    private void isValid(User user) {
-        if(user.getLogin().contains(" ") || user.getId()<1 || user.getLogin().isBlank() ||
-        user.getBirthday().isAfter(LocalDate.now()) || user.getEmail().isBlank() || !user.getEmail().contains("@")){
-            throw new ValidationException(HttpStatus.resolve(500));
-        }
-    }
 
     private void createUserId(User user) {
         id++;

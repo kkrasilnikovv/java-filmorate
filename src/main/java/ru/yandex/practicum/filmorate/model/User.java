@@ -13,6 +13,8 @@ public class User {
     @NotBlank
     @Email
     private final String email;
+    @NotBlank
     private final String login;
+    @PastOrPresent
     private final LocalDate birthday;
 }
