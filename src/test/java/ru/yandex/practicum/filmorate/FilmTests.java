@@ -14,14 +14,14 @@ public class FilmTests {
     @Test
     void LoginWithSpace(){
         FilmController filmController= new FilmController();
-        Film film=new Film("","Происходит только хорошее",
-                LocalDate.of(1895,12,28),60);
+        Film film=new Film(" ","Происходит только хорошее",
+                LocalDate.of(1795,12,28),0);
         Throwable exception = Assertions.assertThrows(
                 ValidationException.class,
                 () -> {
                     filmController.createFilm(film);
                 }
         );
-        Assertions.assertEquals("500 INTERNAL_SERVER_ERROR", exception.getMessage());
+        Assertions.assertEquals("400 BAD_REQUEST", exception.getMessage());
     }
 }

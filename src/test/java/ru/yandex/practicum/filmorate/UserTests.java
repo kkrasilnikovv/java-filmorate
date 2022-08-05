@@ -19,7 +19,7 @@ public class UserTests {
                     userController.createUser(user);
                 }
         );
-        Assertions.assertEquals("500 INTERNAL_SERVER_ERROR", exception.getMessage());
+        Assertions.assertEquals("400 BAD_REQUEST", exception.getMessage());
     }
 
 }
