@@ -28,10 +28,7 @@ public class FilmController {
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
-        if (film.getReleaseDate().isBefore(BIRTH_MOVIE)) {
-            log.error("Передан запрос POST с некорректным данными фильима {}.", film);
-            throw new ValidationException(HttpStatus.resolve(400));
-        }
+        isValid(film);
         createFilmId(film);
         films.put(film.getId(), film);
         log.debug("Получен запрос POST. Передан обьект {}", film);
@@ -41,10 +38,7 @@ public class FilmController {
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film film) {
-        if (film.getReleaseDate().isBefore(BIRTH_MOVIE)) {
-            log.error("Передан запрос POST с некорректным данными фильима {}.", film);
-            throw new ValidationException(HttpStatus.resolve(400));
-        }
+        isValid(film);
         if (films.containsKey(film.getId())) {
             if (!films.containsValue(film)) {
                 films.replace(film.getId(), film);
@@ -60,12 +54,16 @@ public class FilmController {
 
     }
 
-    private void isValid(Film film) {
 
-    }
     private void createFilmId(Film film){
         id++;
         film.setId(id);
+    }
+    private void isValid(Film film){
+        if (film.getReleaseDate().isBefore(BIRTH_MOVIE)) {
+            log.error("Передан запрос POST с некорректным данными фильима {}.", film);
+            throw new ValidationException(HttpStatus.resolve(400));
+        }
     }
 
 }
