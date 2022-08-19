@@ -11,7 +11,7 @@ import java.util.Set;
 
 @Data
 public class Film {
-    final private Set<Integer> likes;
+    private final  Set<Integer> likes;
 
     private Integer id;
     @NotBlank

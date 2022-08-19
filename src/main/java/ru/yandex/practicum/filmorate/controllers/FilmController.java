@@ -2,10 +2,12 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @RestController
@@ -46,7 +48,8 @@ public class FilmController {
         service.remoteLike(id,userId);
     }
     @GetMapping("/popular")
-    public List<Film> getMostPopular(@RequestParam(defaultValue = "10") Integer count){
+    @Validated
+    public List<Film> getMostPopular(@Positive @RequestParam(defaultValue = "10") Integer count){
         return service.getMostPopular(count);
     }
 

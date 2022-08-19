@@ -23,7 +23,7 @@ public class User {
     private final Set<Integer> friends = new HashSet<>();
 
     public void addFriend(Integer friendId) {
-        this.friends.add(friendId);
+        friends.add(friendId);
     }
 
 }
