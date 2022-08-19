@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/films")
 public class FilmController {
 
-    private static FilmService service;
+    private final FilmService service;
 
     @Autowired
     public FilmController(FilmService service) {
