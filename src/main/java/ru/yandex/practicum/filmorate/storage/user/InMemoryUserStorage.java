@@ -37,7 +37,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public Optional<User> findById(Integer id) {
+    public Optional<User> getUserById(Integer id) {
         return Optional.ofNullable(users.get(id));
     }
 

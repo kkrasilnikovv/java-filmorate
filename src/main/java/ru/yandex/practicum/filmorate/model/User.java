@@ -11,15 +11,14 @@ import java.util.Set;
 @NoArgsConstructor
 public class User {
     private Integer id;
-    @NotNull
     private String name;
     @NotBlank
     @Email
     private String email;
     @NotBlank
-    private  String login;
+    private String login;
     @PastOrPresent
-    private  LocalDate birthday;
+    private LocalDate birthday;
     private final Set<Integer> friends = new HashSet<>();
 
     public void addFriend(Integer friendId) {

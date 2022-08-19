@@ -20,7 +20,6 @@ public class FilmService {
 
     private final FilmStorage storage;
     private final UserService userService;
-    private final static LocalDate BIRTH_MOVIE = LocalDate.of(1895, 12, 28);
     private Integer id = 0;
 
     @Autowired
@@ -36,36 +35,33 @@ public class FilmService {
     }
 
     public Film getFilmById(Integer filmId) {
-        return storage.findById(filmId).orElseThrow(() -> new NotFoundException("Фильм с id " + filmId + " не найден."));
+        return storage.findById(filmId).orElseThrow(() ->
+                new NotFoundException("Фильм с id " + filmId + " не найден."));
     }
 
     public Film addFilm(Film film) {
-        isValid(film);
+
         createFilmId(film);
         log.debug("Получен запрос POST. Передан обьект {}", film);
         return storage.addFilm(film);
     }
 
     public Film updateFilm(Film film) {
-        isValid(film);
-        if (storage.findById(film.getId()).isPresent()) {
-            return storage.updateFilm(film);
-        } else {
-            log.error("Передан запрос PUT с некорректным данными фильима {}.", film);
-            throw new NotFoundException("Такого фильма не существует.");
-        }
+        getFilmById(film.getId());
+        return storage.updateFilm(film);
+
     }
 
     public void addLike(Integer filmId, Integer userId) {
         Film film = getFilmById(filmId);
-        User user = userService.findById(userId);
+        User user = userService.getUserById(userId);
         film.addLike(userId);
         log.info("Пользователь: {} поставил лайк фильму: {}", user, film);
     }
 
     public void remoteLike(Integer filmId, Integer userId) {
         Film film = getFilmById(filmId);
-        User user = userService.findById(userId);
+        User user = userService.getUserById(userId);
         film.remoteLike(userId);
         log.info("Пользователь: {} убрал лайк с фильма: {}", user, film);
     }
@@ -78,13 +74,6 @@ public class FilmService {
     private void createFilmId(Film film) {
         id++;
         film.setId(id);
-    }
-
-    private void isValid(Film film) {
-        if (film.getReleaseDate().isBefore(BIRTH_MOVIE)) {
-            log.error("Передан запрос POST с некорректным данными фильима {}.", film);
-            throw new ValidationException("Некорректные данные фильма.");
-        }
     }
 
 

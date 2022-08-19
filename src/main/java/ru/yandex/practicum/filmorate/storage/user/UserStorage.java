@@ -11,7 +11,7 @@ public interface UserStorage {
 
     List<User>  getAllUsers();
 
-    Optional<User> findById(Integer id);
+    Optional<User> getUserById(Integer id);
 
     User addUser(User user);
 
