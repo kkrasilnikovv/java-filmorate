@@ -2,69 +2,77 @@ package ru.yandex.practicum.filmorate.controllers;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.user.UserService;
+
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 @RestController
 @Slf4j
 @RequestMapping("/users")
 public class UserController {
-    private HashMap<Integer, User> users = new HashMap<>();
-    private Integer id = 0;
+
+    private final UserService service;
+
+    @Autowired
+    public UserController(UserService service) {
+        this.service = service;
+    }
 
     @GetMapping
     public List<User> gettingAllUsers() {
-        log.debug("Получен запрос GET /users");
-        return new ArrayList<>(users.values());
+        return service.getAllUsers();
+    }
+
+    @GetMapping("/{userId}")
+    public User getUserById(@PathVariable Integer userId) {
+        return service.getUserById(userId);
     }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         isValid(user);
-        createUserId(user);
-        if (user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
-        log.debug("Получен запрос POST. Передан обьект {}", user);
-        users.put(user.getId(), user);
-        return user;
+        return service.createUser(user);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User user) {
         isValid(user);
-        if (users.containsKey(user.getId())) {
-            if (!users.containsValue(user)) {
-                users.replace(user.getId(), user);
-                log.debug("Пользователь обновлен");
-            } else {
-                log.debug("Пользователь уже создан");
-            }
-            return user;
-        } else {
-            log.error("Передан запрос PUT с некорректным данными пользователя{}", user);
-            throw new NotFoundException(HttpStatus.resolve(404));
+        return service.updateUser(user);
+    }
+
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        service.addFriend(id, friendId);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        service.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable Integer id) {
+        return service.getFriends(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCrossFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+        return service.getCrossFriends(id, otherId);
+    }
+
+    private void isValid(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
         }
-
-    }
-
-
-    private void createUserId(User user) {
-        id++;
-        user.setId(id);
-    }
-    private  void isValid(User user){
-        if(user.getLogin().contains(" ")){
-            throw new ValidationException(HttpStatus.resolve(400));
+        if (user.getLogin().contains(" ")) {
+            throw new ValidationException("Некорректные данные пользователя.");
         }
     }
 
