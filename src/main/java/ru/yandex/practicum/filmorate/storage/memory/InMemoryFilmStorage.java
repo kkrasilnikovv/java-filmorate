@@ -1,8 +1,10 @@
-package ru.yandex.practicum.filmorate.storage.film;
+package ru.yandex.practicum.filmorate.storage.memory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +48,14 @@ public class InMemoryFilmStorage implements FilmStorage {
     public List<Film> getMostPopular(Integer count) {
         return films.values().stream().sorted(Comparator.comparingInt(f -> -f.getLikes().size()))
                 .limit(count).collect(Collectors.toList());
+    }
+    @Override
+    public void addLike(Integer filmId, Integer userId){
+        findById(filmId).get().addLike(userId);
+    }
+    @Override
+    public void removeLike(Integer filmId, Integer userId){
+        findById(filmId).get().remoteLike(userId);
     }
 
 

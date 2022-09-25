@@ -31,7 +31,7 @@ public class ErrorHandler {
     }
     @ExceptionHandler
     public ResponseEntity<String> handlerThrowable(final Throwable ex){
-        log.error("Возникла исключение");
+        log.error("Возникло исключение");
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
