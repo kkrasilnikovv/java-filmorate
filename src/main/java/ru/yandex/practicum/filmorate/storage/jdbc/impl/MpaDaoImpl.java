@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.jdbc.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -23,20 +24,30 @@ public class MpaDaoImpl implements MpaDao {
     public Optional<Mpa> getMpaById(Integer id) {
         final String sql = "SELECT * FROM MPAA where MPAA_ID = ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, id);
-        if(rs.next()){
-            Mpa mpa= new Mpa(rs.getInt("MPAA_ID"),rs.getString("NAME") );
-            return Optional.of(mpa);
+        List<Mpa> mpas=mappingMpa(rs);
+        if(mpas.isEmpty()){
+            return Optional.empty();
+        }else {
+            return Optional.of(mpas.get(0));
         }
-        return Optional.empty();
     }
 
     @Override
     public List<Mpa> getAllMpa() {
         final String sql = "SELECT * FROM MPAA";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
-        List<Mpa> mpas=new ArrayList<>();
+        List<Mpa> mpas=mappingMpa(rs);
+        if(mpas.isEmpty()){
+            return new ArrayList<>();
+        }else {
+            return mpas;
+        }
+    }
+    private List<Mpa> mappingMpa(SqlRowSet rs){
+        List<Mpa> mpas = new ArrayList<>();
         while (rs.next()){
-            mpas.add(new Mpa(rs.getInt("MPAA_ID"),rs.getString("NAME") ));
+            Mpa mpa= new Mpa(rs.getInt("MPAA_ID"),rs.getString("NAME") );
+            mpas.add(mpa);
         }
         return mpas;
     }

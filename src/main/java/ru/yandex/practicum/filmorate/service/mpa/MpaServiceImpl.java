@@ -1,21 +1,15 @@
 package ru.yandex.practicum.filmorate.service.mpa;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.jdbc.impl.MpaDaoImpl;
-
+import ru.yandex.practicum.filmorate.storage.jdbc.MpaDao;
 import java.util.List;
 import java.util.Optional;
 @Service
+@RequiredArgsConstructor
 public class MpaServiceImpl implements MpaService{
-    private final MpaDaoImpl mpaDao;
-
-    @Autowired
-    public MpaServiceImpl(MpaDaoImpl mpaDao) {
-        this.mpaDao = mpaDao;
-    }
-
+    private final MpaDao mpaDao;
     @Override
     public Optional<Mpa> getMpaById(int id) {
         return mpaDao.getMpaById(id);

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.jdbc;
 
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -16,9 +16,7 @@ public interface FilmStorage {
 
     Film addFilm(Film film);
 
-    Film updateFilm(Film film);
+    int updateFilm(Film film);
 
-    List<Film> getMostPopular(Integer count);
-    void addLike(Integer filmId, Integer userId);
-    void removeLike(Integer filmId, Integer userId);
+
 }

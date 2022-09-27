@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.jdbc.FilmGenreDao;
 import ru.yandex.practicum.filmorate.storage.jdbc.GenreDao;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -16,25 +15,19 @@ import java.util.stream.Collectors;
 @Repository
 public class FilmGenreDaoImpl implements FilmGenreDao {
     private final JdbcTemplate jdbcTemplate;
-    private final GenreDao genreDao;
+
 
     @Autowired
-    public FilmGenreDaoImpl(JdbcTemplate jdbcTemplate, GenreDao genreDao) {
+    public FilmGenreDaoImpl(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.genreDao = genreDao;
     }
 
     @Override
     public Set<Genre> findAllByFilmId(Integer id) {
-        Set<Genre> genres = new HashSet<>();
         String sql = "select * from FILMS_GENRES G join GENRES G2 on G2.GENRE_ID = G.GENRE_ID " +
                 "where film_id = ? order by 1 asc ";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, id);
-        while (rs.next()) {
-            genres.add(new Genre(rs.getInt("GENRE_ID"),
-                    rs.getString("NAME")));
-        }
-        return genres;
+        return mappingGenre(rs);
     }
 
     @Override
@@ -69,5 +62,13 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
     private void deleteAll(Film film) {
         final String sql = "delete from FILMS_GENRES where  FILM_ID = ?";
         jdbcTemplate.update(sql, film.getId());
+    }
+    private Set<Genre> mappingGenre(SqlRowSet rs){
+        Set<Genre> genres = new HashSet<>();
+        while (rs.next()) {
+            genres.add(new Genre(rs.getInt("GENRE_ID"),
+                    rs.getString("NAME")));
+        }
+        return genres;
     }
 }

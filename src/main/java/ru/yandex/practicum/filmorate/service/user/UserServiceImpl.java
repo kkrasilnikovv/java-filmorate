@@ -1,26 +1,23 @@
 package ru.yandex.practicum.filmorate.service.user;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.jdbc.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserStorage storage;
     private Integer id = 0;
 
-    @Autowired
-    public UserServiceImpl(@Qualifier("UserDaoImpl") UserStorage storage) {
-        this.storage = storage;
-    }
     @Override
     public List<User> getAllUsers() {
         log.debug("Получен запрос GET /users");
@@ -48,37 +45,7 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    @Override
-    public void addFriend(Integer id, Integer friendId) {
-        getUserById(id);
-        getUserById(friendId);
-        storage.addFriend(id, friendId);
-        log.debug("Пользователь {} добавлен в друзья к {}", friendId, id);
-    }
 
-    @Override
-    public void removeFriend(Integer id, Integer friendId) {
-        getUserById(id);
-        getUserById(friendId);
-        storage.removeFriend(id, friendId);
-        log.debug("Пользователь {} удален из друзей {}", friendId, id);
-    }
-
-    @Override
-    public List<User> getFriends(Integer id) {
-        getUserById(id);
-        return storage.getUserFriends(id);
-
-    }
-
-    @Override
-    public List<User> getCrossFriends(Integer id, Integer userId) {
-        User firstUser = getUserById(id);
-        User secondUser = getUserById(userId);
-        log.debug("Получен список общих друзей {} с {}", id, userId);
-        return firstUser.getFriends().stream().filter(secondUser.getFriends()::contains).map(this::getUserById)
-                .collect(Collectors.toList());
-    }
 
     @Override
     public void reset() {

@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.film.FilmServiceImpl;
-
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
@@ -16,15 +15,11 @@ import java.util.List;
 @RestController
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
 
-    private final FilmServiceImpl service;
-
-    @Autowired
-    public FilmController(FilmServiceImpl service) {
-        this.service = service;
-    }
+    private final FilmService service;
 
     @GetMapping
     public List<Film> getAllFilms() {

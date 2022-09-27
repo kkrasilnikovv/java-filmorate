@@ -19,16 +19,7 @@ import java.util.stream.Collectors;
      User updateUser(User user);
 
 
-     void addFriend(Integer id, Integer friendId);
 
-
-     void removeFriend(Integer id, Integer friendId);
-
-
-     List<User> getFriends(Integer id);
-
-
-     List<User> getCrossFriends(Integer id, Integer userId);
 
 
      void reset();

@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.jdbc.GenreDao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Repository
 public class GenreDaoImpl implements GenreDao {
@@ -21,22 +22,27 @@ public class GenreDaoImpl implements GenreDao {
     }
 
     @Override
-    public List<Genre> findAllGenre() {
+    public List<Genre> getAllGenre() {
         final String sql="SELECT * FROM GENRES";
-        return jdbcTemplate.queryForStream(sql,
-                (rs, rowNum) -> new Genre(rs.getInt("GENRE_ID"), rs.getString("name"))).
-                collect(Collectors.toList());
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
+        List<Genre> genres = mappingGenre(rs);
+        if(genres.isEmpty()){
+            return new ArrayList<>();
+        }else {
+            return genres;
+        }
     }
 
     @Override
-    public Optional<Genre> findGenreById(Integer id) {
+    public Optional<Genre> getGenreById(Integer id) {
         final String sql="SELECT * FROM GENRES WHERE genre_id =  ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, id);
-        if (rs.next()) {
-            return Optional.of(new Genre(rs.getInt(1),
-                    rs.getString(2)));
+        List<Genre> genres = mappingGenre(rs);
+        if(genres.isEmpty()){
+            return Optional.empty();
+        }else {
+            return Optional.of(genres.get(0));
         }
-        return Optional.empty();
     }
 
     @Override
@@ -63,5 +69,13 @@ public class GenreDaoImpl implements GenreDao {
         } else {
             return Optional.of(genre);
         }
+    }
+    private List<Genre> mappingGenre(SqlRowSet rs){
+        List<Genre> genres = new ArrayList<>();
+        while (rs.next()){
+            Genre genre = new Genre(rs.getInt("GENRE_ID"), rs.getString("NAME"));
+            genres.add(genre);
+        }
+        return genres;
     }
 }

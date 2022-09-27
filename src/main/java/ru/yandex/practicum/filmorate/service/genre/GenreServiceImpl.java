@@ -1,31 +1,25 @@
 package ru.yandex.practicum.filmorate.service.genre;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.jdbc.impl.GenreDaoImpl;
-import ru.yandex.practicum.filmorate.storage.jdbc.impl.MpaDaoImpl;
-
+import ru.yandex.practicum.filmorate.storage.jdbc.GenreDao;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class GenreServiceImpl implements GenreService{
-    private final GenreDaoImpl genreDao;
+    private final GenreDao genreDao;
 
-    @Autowired
-    public GenreServiceImpl(GenreDaoImpl genreDao) {
-        this.genreDao = genreDao;
-    }
     @Override
     public List<Genre> findAllGenre() {
-        return genreDao.findAllGenre();
+        return genreDao.getAllGenre();
     }
 
     @Override
     public Optional<Genre> findGenreById(Integer id) {
-        return genreDao.findGenreById(id);
+        return genreDao.getGenreById(id);
     }
 
     @Override

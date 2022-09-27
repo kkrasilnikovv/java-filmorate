@@ -2,15 +2,10 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
-
-
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class Film {
@@ -30,7 +25,7 @@ public class Film {
     private Integer rate;
     @NotNull
     private Mpa mpa;
-    private final Set<Integer> likes=new HashSet<>();
+
 
 @Builder
     public Film(Integer id, String name, String description, LocalDate releaseDate, int duration,
@@ -41,17 +36,6 @@ public class Film {
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
-    }
-
-
-    public void addLike(Integer filmId) {
-        likes.add(filmId);
-        rate=likes.size();
-    }
-
-    public void remoteLike(Integer userId) {
-        likes.remove(userId);
-        rate=likes.size();
     }
 
 }
