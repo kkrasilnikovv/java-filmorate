@@ -5,12 +5,12 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.jdbc.UserStorage;
+import ru.yandex.practicum.filmorate.storage.jdbc.UserDao;
 
 import java.util.*;
 
 @Repository("UserDaoImpl")
-public class UserDaoImpl implements UserStorage {
+public class UserDaoImpl implements UserDao {
     private final JdbcTemplate jdbcTemplate;
 
     public UserDaoImpl(JdbcTemplate jdbcTemplate) {
@@ -34,12 +34,7 @@ public class UserDaoImpl implements UserStorage {
     public List<User> getAllUsers() {
         final String sql = "Select * from users";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql);
-        List<User> users = mappingUser(rs);
-        if(users.isEmpty()){
-            return new ArrayList<>();
-        }else {
-            return users;
-        }
+        return mappingUser(rs);
     }
 
     @Override
@@ -56,9 +51,9 @@ public class UserDaoImpl implements UserStorage {
         final String sql = "SELECT * from USERS where USER_ID = ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, id);
         List<User> users = mappingUser(rs);
-        if(users.isEmpty()){
+        if (users.isEmpty()) {
             return Optional.empty();
-        }else {
+        } else {
             return Optional.of(users.get(0));
         }
     }
@@ -74,7 +69,7 @@ public class UserDaoImpl implements UserStorage {
     }
 
 
-    private List<User> mappingUser(SqlRowSet rs){
+    private List<User> mappingUser(SqlRowSet rs) {
         List<User> users = new ArrayList<>();
         while (rs.next()) {
             User user = new User(rs.getInt("USER_ID"), rs.getString("NAME"),
@@ -85,7 +80,8 @@ public class UserDaoImpl implements UserStorage {
         }
         return users;
     }
-    public Map<String, Object> userToMap(User user) {
+
+    private Map<String, Object> userToMap(User user) {
         Map<String, Object> values = new HashMap<>();
         values.put("EMAIL", user.getEmail());
         values.put("LOGIN", user.getLogin());

@@ -23,7 +23,7 @@ public class GenreServiceImpl implements GenreService{
     }
 
     @Override
-    public void deleteAllGenreByFilmId(Long filmId) {
+    public void deleteAllGenreByFilmId(Integer filmId) {
         genreDao.deleteAllGenreByFilmId(filmId);
     }
 

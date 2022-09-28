@@ -10,7 +10,7 @@ public interface GenreDao {
 
     Optional<Genre> getGenreById(Integer id);
 
-    void deleteAllGenreByFilmId(Long filmId);
+    void deleteAllGenreByFilmId(Integer filmId);
 
     Optional<Genre> createGenre(Genre genre);
 

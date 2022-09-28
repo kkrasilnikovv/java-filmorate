@@ -2,12 +2,10 @@ package ru.yandex.practicum.filmorate.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.jdbc.UserStorage;
+import ru.yandex.practicum.filmorate.storage.jdbc.UserDao;
 
 import java.util.List;
 
@@ -15,8 +13,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserStorage storage;
-    private Integer id = 0;
+    private final UserDao storage;
 
     @Override
     public List<User> getAllUsers() {
@@ -32,7 +29,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        createUserId(user);
         log.debug("Получен запрос POST. Передан обьект {}", user);
         return storage.addUser(user);
     }
@@ -45,18 +41,9 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
-
     @Override
     public void reset() {
         log.debug("Хранилище пользователей очищено");
         storage.reset();
     }
-
-    private void createUserId(User user) {
-        id++;
-        user.setId(id);
-    }
-
-
 }

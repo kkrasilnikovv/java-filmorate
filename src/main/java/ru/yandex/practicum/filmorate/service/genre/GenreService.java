@@ -8,13 +8,11 @@ import java.util.Optional;
 public interface GenreService {
     List<Genre> findAllGenre();
 
-    Optional<Genre> findGenreById(Integer id);
+    Optional<Genre> findGenreById(Integer filmId);
 
-    void deleteAllGenreByFilmId(Long filmId);
+    void deleteAllGenreByFilmId(Integer filmId);
 
     Optional<Genre> createGenre(Genre genre);
 
     Optional<Genre> updateGenre(Genre genre);
-
-    //void updateAllGenreByFilm(Film film);
 }

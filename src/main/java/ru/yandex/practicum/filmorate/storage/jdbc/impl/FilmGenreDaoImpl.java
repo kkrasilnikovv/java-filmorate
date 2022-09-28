@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.jdbc.FilmGenreDao;
-import ru.yandex.practicum.filmorate.storage.jdbc.GenreDao;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,7 +25,7 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
     @Override
     public Set<Genre> findAllByFilmId(Integer id) {
         String sql = "select * from FILMS_GENRES G join GENRES G2 on G2.GENRE_ID = G.GENRE_ID " +
-                "where film_id = ? order by 1 asc ";
+                "where film_id = ? order by 1";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, id);
         return mappingGenre(rs);
     }
@@ -63,7 +63,8 @@ public class FilmGenreDaoImpl implements FilmGenreDao {
         final String sql = "delete from FILMS_GENRES where  FILM_ID = ?";
         jdbcTemplate.update(sql, film.getId());
     }
-    private Set<Genre> mappingGenre(SqlRowSet rs){
+
+    private Set<Genre> mappingGenre(SqlRowSet rs) {
         Set<Genre> genres = new HashSet<>();
         while (rs.next()) {
             genres.add(new Genre(rs.getInt("GENRE_ID"),

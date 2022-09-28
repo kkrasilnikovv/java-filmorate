@@ -4,8 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
 public class Film {
@@ -13,7 +12,6 @@ public class Film {
     private Integer id;
     @NotBlank
     private final String name;
-    @NotBlank
     @Size(min = 0, max = 200)
     private final String description;
     @NotNull
@@ -21,7 +19,7 @@ public class Film {
     @Min(1)
     @Positive
     private final int duration;
-    private List<Genre> genres=new ArrayList<>();
+    private List<Genre> genres = new ArrayList<>();
     private Integer rate;
     @NotNull
     private Mpa mpa;
