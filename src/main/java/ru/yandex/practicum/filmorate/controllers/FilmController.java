@@ -1,13 +1,12 @@
 package ru.yandex.practicum.filmorate.controllers;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
-
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
@@ -16,15 +15,11 @@ import java.util.List;
 @RestController
 @Validated
 @Slf4j
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
 
     private final FilmService service;
-
-    @Autowired
-    public FilmController(FilmService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public List<Film> getAllFilms() {
@@ -48,9 +43,9 @@ public class FilmController {
         return service.updateFilm(film);
     }
 
-    @PutMapping("/{id}/like/{userId}")
-    public void addLike(@PathVariable Integer id, @PathVariable Integer userId) {
-        service.addLike(id, userId);
+    @PutMapping("/{filmId}/like/{userId}")
+    public void addLike(@PathVariable Integer filmId, @PathVariable Integer userId) {
+        service.addLike(filmId, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")

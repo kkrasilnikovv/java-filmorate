@@ -1,11 +1,11 @@
-package ru.yandex.practicum.filmorate.storage.user;
+package ru.yandex.practicum.filmorate.storage.jdbc;
 
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserStorage {
+public interface UserDao {
 
     void reset();
 
@@ -17,7 +17,7 @@ public interface UserStorage {
 
     User updateUser(User user);
 
-    List<User> getUserFriends(Integer id);
+
 
 
 }
